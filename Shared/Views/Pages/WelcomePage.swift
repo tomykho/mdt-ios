@@ -1,13 +1,13 @@
 //
-//  ContentView.swift
-//  Shared
+//  WelcomePage.swift
+//  MDT
 //
 //  Created by Tomy Kho on 20/7/22.
 //
 
 import SwiftUI
 
-struct WelcomeView: View {
+struct WelcomePage: View {
     
     var body: some View {
         NavigationView {
@@ -15,12 +15,12 @@ struct WelcomeView: View {
                 Text("MDT")
                     .font(.system(size: 60, weight: .heavy))
                 Spacer()
-                NavigationLink(destination: LoginView()) {
+                NavigationLink(destination: LoginPage()) {
                     Text("Login")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 6)
                 }
-                NavigationLink(destination: RegisterView()) {
+                NavigationLink(destination: RegisterPage()) {
                     Text("Register")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 6)
@@ -28,16 +28,16 @@ struct WelcomeView: View {
                 .buttonStyle(.bordered)
             }
             .padding()
+            .modifier(DefaultViewModifier())
         }
-        .buttonStyle(.borderedProminent)
-        .tint(.black)
         .accentColor(.black)
-        .textFieldStyle(.roundedBorder)
+        .navigationViewStyle(.stack)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-struct WelcomeView_Previews: PreviewProvider {
+struct WelcomePage_Previews: PreviewProvider {
     static var previews: some View {
-        WelcomeView()
+        WelcomePage()
     }
 }

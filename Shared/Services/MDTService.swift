@@ -14,6 +14,7 @@ class MDTService : ObservableObject {
     static let shared = MDTService()
     let tron = TRON(baseURL: "https://green-thumb-64168.uc.r.appspot.com")
     let keychain = KeychainSwift(keyPrefix: "mdt")
+    let modelDecoder = JSONDecoder()
     var token: String? {
         set {
             if let val = newValue {
@@ -42,16 +43,20 @@ class MDTService : ObservableObject {
     }
     @Published var isLoggedIn: Bool = false
     @Published var user: User?
+    @Published var userTransactions: [Date: [Transaction]]?
     
     private init() {
         isLoggedIn = token != nil
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        modelDecoder.dateDecodingStrategy = .formatted(dateFormatter)
     }
     
     func request<T: Codable>(_ path: String,
                              _ method: HTTPMethod = .get,
                              _ parameters: Codable? = nil
     ) -> APIRequest<T, APIError> {
-        let request: APIRequest<T, APIError> = tron.codable.request(path)
+        let request: APIRequest<T, APIError> = tron.codable(modelDecoder: modelDecoder).request(path)
         request.method = method
         if let token = token {
             request.headers["Authorization"] = token
@@ -87,12 +92,25 @@ class MDTService : ObservableObject {
                 self.token = nil
             }
         }
+        self.userTransactions = nil
         transactions().perform { result in
-            print(result)
+            var userTransactions = [Date: [Transaction]]()
+            for transaction in result.data {
+                guard let date = Calendar.current.date(
+                    from: Calendar.current.dateComponents(
+                        [.year, .month, .day],
+                        from: transaction.transactionDate
+                    )
+                ) else {
+                    continue
+                }
+                if userTransactions[date] == nil {
+                    userTransactions[date] = []
+                }
+                userTransactions[date]?.append(transaction)
+            }
+            self.userTransactions = userTransactions
         } failure: { error in
-            guard let data = error.data else { return }
-            let theJSONText = String(data: data, encoding: .ascii)
-            print("JSON string = \(theJSONText!)")
             if error.response?.statusCode == 401 {
                 self.token = nil
             }

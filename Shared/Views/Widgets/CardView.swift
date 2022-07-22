@@ -7,14 +7,19 @@
 
 import SwiftUI
 
-struct CardView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+struct CardView<Content: View>: View {
+    var content: () -> Content
+    
+    init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
     }
-}
-
-struct CardView_Previews: PreviewProvider {
-    static var previews: some View {
-        CardView()
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 18)
+                .fill(.white)
+                .shadow(color: .black.opacity(0.2), radius: 6)
+            content()
+        }
     }
 }

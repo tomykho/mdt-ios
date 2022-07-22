@@ -1,5 +1,5 @@
 //
-//  Default.swift
+//  DefaultViewModifier.swift
 //  MDT
 //
 //  Created by Tomy Kho on 20/7/22.
@@ -12,6 +12,8 @@ struct DefaultViewModifier: ViewModifier {
         content
             .buttonStyle(.borderedProminent)
             .tint(.black)
-            .textFieldStyle(.roundedBorder)
+            .textFieldStyle(.outlined)
+            .background(.gray.opacity(0.1))
+            
     }
 }

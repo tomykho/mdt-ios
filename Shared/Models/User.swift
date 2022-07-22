@@ -6,3 +6,11 @@
 //
 
 import Foundation
+
+struct User: Codable, Hashable {
+    let id: String?
+    let name: String?
+    let accountNo: String
+    let balance: Double?
+    let accountHolder: String?
+}

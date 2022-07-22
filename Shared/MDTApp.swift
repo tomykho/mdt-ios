@@ -9,9 +9,15 @@ import SwiftUI
 
 @main
 struct MDTApp: App {
+    @StateObject var service = MDTService.shared
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if service.isLoggedIn {
+                HomePage()
+            } else {
+                WelcomePage()
+            }
         }
     }
 }
